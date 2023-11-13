@@ -13,7 +13,7 @@ git clone https://github.com/kamilalfian/stock-predictor-10-days.git
 ### 2. Navigate to project directory
 
 ```bash
-cd stock-predictor
+cd stock-predictor-10-days
 ```
 
 ### 3. Install dependencies
