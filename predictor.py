@@ -13,7 +13,7 @@ import tensorflow as tf
 from matplotlib.lines import Line2D
 
 #Title for the web app
-st.title('Stock Prediction test')
+st.title('Stock Prediction')
 
 #Fetching stock data
 user_input=st.text_input('Enter Stock Ticker (based on Yahoo Finance Website, ex: INTP.JK)','INTP.JK')
