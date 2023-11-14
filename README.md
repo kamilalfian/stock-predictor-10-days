@@ -1,6 +1,6 @@
 # Stock Predictor App
 
-This repository contains code for a Stock Predictor web application using Streamlit. Before that, you can try the web app I have created in https://stock-predictor10days-kaal.streamlit.app/.
+This repository contains code for a Stock Predictor web application using Streamlit. Before that, you can try the web app I have created in https://stock-predictor-10-days-kaal.streamlit.app/.
 
 ## Usage
 
