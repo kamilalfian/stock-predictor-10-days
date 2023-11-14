@@ -20,6 +20,7 @@ st.title('Stock Prediction')
 user_input=st.text_input('Enter Stock Ticker (based on Yahoo Finance Website, ex: INTP.JK)','INTP.JK')
 start='2013-01-01'
 end = (datetime.now(pytz.timezone('Asia/Jakarta'))+ BDay(1)).strftime('%Y-%m-%d')
+st.write(end)
 yfin.pdr_override()
 df=yfin.download(user_input,start,end)
 
