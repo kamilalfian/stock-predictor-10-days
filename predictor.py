@@ -7,6 +7,7 @@ from keras.models import load_model
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
+import pytz
 import keras.backend as K
 import tensorflow as tf
 from matplotlib.lines import Line2D
@@ -17,7 +18,7 @@ st.title('Stock Prediction')
 #Fetching stock data
 user_input=st.text_input('Enter Stock Ticker (based on Yahoo Finance Website, ex: INTP.JK)','INTP.JK')
 start='2013-01-01'
-end=datetime.now().strftime('%Y-%m-%d')
+end=datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%Y-%m-%d')
 yfin.pdr_override()
 df=yfin.download(user_input,start,end)
 
