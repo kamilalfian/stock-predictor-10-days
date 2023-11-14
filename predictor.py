@@ -8,7 +8,6 @@ import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
 import pytz
-from pandas.tseries.offsets import BDay
 import keras.backend as K
 import tensorflow as tf
 from matplotlib.lines import Line2D
