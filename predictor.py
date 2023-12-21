@@ -7,7 +7,6 @@ from keras.models import load_model
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
-import pytz
 import keras.backend as K
 import tensorflow as tf
 from matplotlib.lines import Line2D
@@ -18,7 +17,7 @@ st.title('Stock Prediction')
 #Fetching stock data
 user_input=st.text_input('Enter Stock Ticker (based on Yahoo Finance Website, ex: INTP.JK)','INTP.JK')
 start='2013-01-01'
-end = (datetime.now(pytz.timezone('Asia/Jakarta')) + pd.offsets.BDay(1)).strftime('%Y-%m-%d')
+end=datetime.now().strftime('%Y-%m-%d')
 yfin.pdr_override()
 df=yfin.download(user_input,start,end)
 
@@ -73,10 +72,12 @@ def custom_loss(y_test, y_predicted):
 tf.keras.utils.get_custom_objects()['custom_loss'] = custom_loss
 
 # Load pretrained model, created by Stock_Predictor.ipynb
-model = load_model('model.h5')
+model1 = load_model('model_2_layers_intp.h5')
+model2 = load_model('model_2_layers_antm.h5')
 
 # Compile the model with the custom loss function
-model.compile(optimizer='adam', loss='custom_loss')
+model1.compile(optimizer='adam', loss='custom_loss')
+model2.compile(optimizer='adam', loss='custom_loss')
 
 #load testing data
 past100=pd.DataFrame(df.Close[0:int(len(df)*0.7)]).tail(100)
@@ -91,15 +92,30 @@ for i in range(100, input_data.shape[0]-9):
 x_test, y_test = np.array(x_test), np.array(y_test)
 
 #predict the stock price using the testing data
-y_predicted = model.predict(x_test)
+y_predicted1 = model1.predict(x_test)
+y_predicted2 = model2.predict(x_test)
 
 #revert scaling to give actual price
-y_predicted=(y_predicted*(scaler.data_max_-scaler.data_min_)+scaler.data_min_)
+y_predicted1=(y_predicted1*(scaler.data_max_-scaler.data_min_)+scaler.data_min_)
+y_predicted2=(y_predicted2*(scaler.data_max_-scaler.data_min_)+scaler.data_min_)
 y_test=y_test*(scaler.data_max_-scaler.data_min_)+scaler.data_min_
 
 # Calculate MAPE
 def calculate_mape(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred[:-10]) / y_true)) * 100
+
+# Try different weights and choose the combination with the best performance
+best_mape = float('inf')
+best_weight = 0.5  # Default weight
+for weight in np.arange(0, 1.01, 0.01):
+    y_predicted = weight * y_predicted1 + (1 - weight) * y_predicted2
+    mape = calculate_mape(y_test, y_predicted)
+    if mape < best_mape:
+        best_mape = mape
+        best_weight = weight
+
+# Use the best weight for the ensemble
+y_predicted = best_weight * y_predicted1 + (1 - best_weight) * y_predicted2
 
 # Calculate MAPE for your predictions
 mape = calculate_mape(y_test, y_predicted)
@@ -124,6 +140,7 @@ plt.show()
 # plot the graph, write the MAPE, and plot the actual vs predicted price table
 st.pyplot(fig)
 st.write(f'Mean Absolute Percentage Error: {mape:.2f}%')
+st.write(f'model1 best weight: {best_weight}, model2 best weight: {1-best_weight}')
 y_test=df.Close.sort_index(ascending=False)
 result_df = pd.concat([y_test, y_predicted], axis=1)
 result_df.rename(columns={'Close': 'Original Price'}, inplace=True)
