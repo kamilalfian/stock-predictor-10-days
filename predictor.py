@@ -144,4 +144,4 @@ st.write(f'model1 best weight: {best_weight}, model2 best weight: {1-best_weight
 y_test=df.Close.sort_index(ascending=False)
 result_df = pd.concat([y_test, y_predicted], axis=1)
 result_df.rename(columns={'Close': 'Original Price'}, inplace=True)
-st.write(result_df.sort_index(ascending=False).head(6))
+st.write(result_df.sort_index(ascending=False).head(10))
